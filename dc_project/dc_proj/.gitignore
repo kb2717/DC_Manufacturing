@@ -1,0 +1,28 @@
+# Virtual environments
+.venv/
+.venv_local/
+
+# Generated outputs
+results/
+runs/
+*.log
+
+data/
+26m_pro/
+
+
+
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+runs/
+results/
+Backend/.env
+*.pth
+*.pt
+# Secrets / local config
+config.yaml
+# Gradio
+gradio_cached_examples/
+flagged/

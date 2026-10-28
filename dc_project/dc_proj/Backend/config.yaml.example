@@ -1,0 +1,56 @@
+# Copy to Backend/config.yaml and fill in your real values.
+# All relative paths resolve from Backend/ (the folder that holds main.py).
+
+
+paths:
+  # inference (used by damage_pipeline.py)
+  # Download the released weights into Backend/weights/ (see README → "Weights").
+  resnet: weights/resnet50_damage.pth
+  yolo: weights/yolo26_damage.pt
+
+  # training / data prep (used by resnet50.py, yolo26m.py, data_converter.py)
+  # VehiDE ships a train and a validation split, each with its own images folder
+  # and VIA-style JSON. Point these at them.
+  img_dir: data/vehide/image
+  json_path: data/vehide/0Train_via_annos.json
+  val_img_dir: data/vehide/validation          # optional; if missing, a random 80/20 split is used
+  val_json_path: data/vehide/0Val_via_annos.json
+
+  # Folder(s) of UNDAMAGED car photos for the ResNet-50 classifier. VehiDE only
+  # contains damaged cars, so a second dataset is needed for the "undamaged" class.
+  # Searched recursively. Leave empty to train on VehiDE alone (not recommended).
+  undamaged_dirs:
+    - data/undamaged
+
+  # Folder(s) of WHOLE-CAR photos of DAMAGED cars (e.g. Car Damage Dataset's
+  # 00-damage). VehiDE is mostly close-ups; without whole-car damaged examples
+  # the classifier learns "close-up = damaged" instead of looking at the damage.
+  damaged_dirs:
+    - data/damaged_whole_car
+
+  yolo_dataset: data/yolo_dataset
+  data: data/yolo_dataset/data.yaml
+  runs_segment: runs/segment
+  hyperparameters: app/models/YOLO26m/hyp.yaml   # optional; skipped if the file does not exist
+  output_model: weights/resnet50_damage.pth
+
+models:
+  # Starting checkpoint for YOLO training. yolo26s-seg.pt matches the released
+  # weights; yolo26m-seg.pt is larger and slightly more accurate.
+  yolo26m_pt: yolo26s-seg.pt
+
+training:
+  device: auto        # auto | cpu | 0 | 0,1
+  yolo_epochs: 150
+  yolo_imgsz: 1280
+  yolo_batch: 16
+  resnet_epochs: 10
+  resnet_batch: 64
+  workers: 4
+
+inference:
+  conf: 0.25          # YOLO confidence threshold for reported damage
+
+api:
+  # Preferred: set HF_TOKEN in Backend/.env instead. This is only the fallback.
+  qwen: YOUR_HUGGINGFACE_ROUTER_API_KEY

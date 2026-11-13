@@ -40,6 +40,7 @@ def evaluate_resnet(config, batch_size=64, workers=4):
             fn += int(((preds == 0) & (labels == 1)).sum())
 
     total = max(tp + tn + fp + fn, 1)
+#    evaluate metrics
     precision = tp / max(tp + fp, 1)
     recall = tp / max(tp + fn, 1)
     return {
